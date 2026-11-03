@@ -4,6 +4,7 @@ import 'package:postcodes/widgets/place_list_tile.dart';
 import '../models/place.dart';
 import '../services/postcode_service.dart';
 import '../styles/app_styles.dart';
+import '../widgets/recent_searches_bar.dart';
 import 'place_detail_screen.dart';
 
 enum SearchState { initial, loading, results, notFound, error }
@@ -147,28 +148,13 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
           ),
-          if (recentSearches.isNotEmpty)
-            SizedBox(
-              height: 40,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                padding: const EdgeInsets.symmetric(horizontal: 8),
-                itemCount: recentSearches.length,
-                itemBuilder: (context, index) {
-                  final query = recentSearches[index];
-                  return Padding(
-                    padding: const EdgeInsets.only(right: 8),
-                    child: ActionChip(
-                      label: Text(query, style: AppStyles.placeSubtitle),
-                      onPressed: () {
-                        searchController.text = query;
-                        loadPlaces();
-                      },
-                    ),
-                  );
-                },
-              ),
-            ),
+          RecentSearchesBar(
+            searches: recentSearches,
+            onSelected: (query) {
+              searchController.text = query;
+              loadPlaces();
+            },
+          ),
           Expanded(child: _buildBody()),
         ],
       ),

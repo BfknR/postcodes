@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../models/place.dart';
 import '../styles/app_styles.dart';
 
@@ -12,9 +13,12 @@ class PlaceListTile extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onTap,
-      leading: const Text('🐧', style: TextStyle(fontSize: 24)),
+      leading: Icon(Icons.location_city_rounded, color: AppStyles.primary),
       title: Text(place.name, style: AppStyles.placeName),
-      subtitle: Text('${place.admin2} · ${place.admin1}', style: AppStyles.placeSubtitle),
+      subtitle: Text(
+        '${place.admin2} · ${place.admin1}',
+        style: AppStyles.placeSubtitle,
+      ),
     );
   }
 }
