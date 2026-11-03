@@ -69,7 +69,7 @@ lib/
 
 | Search | Detail |
 |--------|--------|
-| ![Search screen](screenshots/search.png) | ![Detail screen](screenshots/detail.png) |
+| <img src="screenshots/search.png" width="200"> | <img src="screenshots/detail.png" width="200"> |
 
 ## Reflection
 
