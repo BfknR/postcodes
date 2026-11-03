@@ -9,3 +9,4 @@ results: json["results"] == null ? [] : List<Place>.from(json["results"].map((x)
 - Found out not setting as required the OnTap on Place_list_tile allows me to have it empty without adding the () {}.
 - On the input bar the color was looking out of place when focusing on it. Had to change enabledBorder and focusedBorder.
 - When generating WeatherResponse with quicktype, stripped unused fields (latitude, longitude, elevation, currentUnits, time, interval) and renamed Current → WeatherData. Also dropped CurrentUnits entirely since we only need temperature, weather_code and wind_speed.
+- Used ActionChip instead of ChoiceChip for recent searches. ChoiceChip is for selecting between options (it has a selected state). ActionChip is for triggering an action on tap, which is what we want — tapping a recent search just re-runs it, there's nothing to "select".

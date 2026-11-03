@@ -23,6 +23,8 @@ class _SearchScreenState extends State<SearchScreen> {
   List<Place> places = [];
   String lastQuery = '';
 
+  List<String> recentSearches = [];
+
   @override
   void dispose() {
     searchController.dispose();
@@ -41,6 +43,12 @@ class _SearchScreenState extends State<SearchScreen> {
       places = await postcodeService.search(query);
       if (!mounted) return;
       state = places.isEmpty ? SearchState.notFound : SearchState.results;
+
+      if (places.isNotEmpty) {
+        recentSearches.remove(lastQuery);
+        recentSearches.insert(0, lastQuery);
+        if (recentSearches.length > 5) recentSearches.removeLast();
+      }
     } catch (e) {
       if (!mounted) return;
       debugPrint(e.toString());
@@ -139,6 +147,28 @@ class _SearchScreenState extends State<SearchScreen> {
               ),
             ),
           ),
+          if (recentSearches.isNotEmpty)
+            SizedBox(
+              height: 40,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                padding: const EdgeInsets.symmetric(horizontal: 8),
+                itemCount: recentSearches.length,
+                itemBuilder: (context, index) {
+                  final query = recentSearches[index];
+                  return Padding(
+                    padding: const EdgeInsets.only(right: 8),
+                    child: ActionChip(
+                      label: Text(query, style: AppStyles.placeSubtitle),
+                      onPressed: () {
+                        searchController.text = query;
+                        loadPlaces();
+                      },
+                    ),
+                  );
+                },
+              ),
+            ),
           Expanded(child: _buildBody()),
         ],
       ),
