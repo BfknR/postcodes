@@ -8,3 +8,4 @@ results: json["results"] == null ? [] : List<Place>.from(json["results"].map((x)
 - The API was returning elevation as a double but quicktype sets it as an int. Manually modified it.
 - Found out not setting as required the OnTap on Place_list_tile allows me to have it empty without adding the () {}.
 - On the input bar the color was looking out of place when focusing on it. Had to change enabledBorder and focusedBorder.
+- When generating WeatherResponse with quicktype, stripped unused fields (latitude, longitude, elevation, currentUnits, time, interval) and renamed Current → WeatherData. Also dropped CurrentUnits entirely since we only need temperature, weather_code and wind_speed.
