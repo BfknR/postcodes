@@ -6,3 +6,5 @@ results: json["results"] == null ? [] : List<Place>.from(json["results"].map((x)
 ```
 - Created an enum for different search_screen states (SearchState)
 - The API was returning elevation as a double but quicktype sets it as an int. Manually modified it.
+- Found out not setting as required the OnTap on Place_list_tile allows me to have it empty without adding the () {}.
+- On the input bar the color was looking out of place when focusing on it. Had to change enabledBorder and focusedBorder.

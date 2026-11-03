@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:postcodes/widgets/place_list_tile.dart';
 
 import '../models/place.dart';
 import '../services/postcode_service.dart';
 import '../styles/app_styles.dart';
+import 'place_detail_screen.dart';
 
 enum SearchState { initial, loading, results, notFound, error }
 
@@ -57,6 +59,7 @@ class _SearchScreenState extends State<SearchScreen> {
             child: Text(
               'Escriu un codi postal o el nom d\'una població per cercar.',
               textAlign: TextAlign.center,
+              style: AppStyles.hint,
             ),
           ),
         );
@@ -69,10 +72,14 @@ class _SearchScreenState extends State<SearchScreen> {
           itemCount: places.length,
           itemBuilder: (context, index) {
             final place = places[index];
-            return ListTile(
-              leading: const Text('🐧', style: TextStyle(fontSize: 24)),
-              title: Text(place.name),
-              subtitle: Text('${place.admin2} · ${place.admin1}'),
+            return PlaceListTile(
+              place: place,
+              onTap: () => Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => PlaceDetailScreen(place: place),
+                ),
+              ),
             );
           },
         );
@@ -84,6 +91,7 @@ class _SearchScreenState extends State<SearchScreen> {
             child: Text(
               'No hem trobat cap població per a «$lastQuery».',
               textAlign: TextAlign.center,
+              style: AppStyles.hint,
             ),
           ),
         );
@@ -98,6 +106,7 @@ class _SearchScreenState extends State<SearchScreen> {
                 const Text(
                   'No s\'ha pogut connectar. Comprova la connexió.',
                   textAlign: TextAlign.center,
+                  style: AppStyles.bodyText,
                 ),
                 AppStyles.smallSeparator,
                 ElevatedButton(
@@ -123,6 +132,7 @@ class _SearchScreenState extends State<SearchScreen> {
               controller: searchController,
               textInputAction: TextInputAction.search,
               onSubmitted: (_) => loadPlaces(),
+              style: AppStyles.bodyText,
               decoration: const InputDecoration(
                 hintText: 'Codi postal o població',
                 prefixIcon: Icon(Icons.search),

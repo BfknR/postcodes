@@ -24,11 +24,12 @@ class PostCodeApp extends StatelessWidget {
     return MaterialApp(
       theme: ThemeData(
         fontFamily: GoogleFonts.googleSans().fontFamily,
-        scaffoldBackgroundColor: AppStyles.primary,
+        scaffoldBackgroundColor: AppStyles.background,
         appBarTheme: AppBarTheme(
           backgroundColor: AppStyles.primary,
           foregroundColor: AppStyles.onPrimary,
         ),
+        inputDecorationTheme: AppStyles.searchInputDecoration,
       ),
       home: const SearchScreen(),
     );
