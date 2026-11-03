@@ -1,0 +1,137 @@
+import 'package:flutter/material.dart';
+
+import '../models/place.dart';
+import '../services/postcode_service.dart';
+import '../styles/app_styles.dart';
+
+enum SearchState { initial, loading, results, notFound, error }
+
+class SearchScreen extends StatefulWidget {
+  const SearchScreen({super.key});
+
+  @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  final TextEditingController searchController = TextEditingController();
+  final PostcodeService postcodeService = PostcodeService();
+
+  SearchState state = SearchState.initial;
+  List<Place> places = [];
+  String lastQuery = '';
+
+  @override
+  void dispose() {
+    searchController.dispose();
+    super.dispose();
+  }
+
+  Future<void> loadPlaces() async {
+    final query = searchController.text.trim();
+    if (query.isEmpty) return;
+
+    lastQuery = query;
+    state = SearchState.loading;
+    setState(() {});
+
+    try {
+      places = await postcodeService.search(query);
+      if (!mounted) return;
+      state = places.isEmpty ? SearchState.notFound : SearchState.results;
+    } catch (e) {
+      if (!mounted) return;
+      debugPrint(e.toString());
+      state = SearchState.error;
+    }
+
+    setState(() {});
+  }
+
+  Widget _buildBody() {
+    switch (state) {
+      case SearchState.initial:
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Text(
+              'Escriu un codi postal o el nom d\'una població per cercar.',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+
+      case SearchState.loading:
+        return const Center(child: CircularProgressIndicator());
+
+      case SearchState.results:
+        return ListView.builder(
+          itemCount: places.length,
+          itemBuilder: (context, index) {
+            final place = places[index];
+            return ListTile(
+              leading: const Text('🐧', style: TextStyle(fontSize: 24)),
+              title: Text(place.name),
+              subtitle: Text('${place.admin2} · ${place.admin1}'),
+            );
+          },
+        );
+
+      case SearchState.notFound:
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Text(
+              'No hem trobat cap població per a «$lastQuery».',
+              textAlign: TextAlign.center,
+            ),
+          ),
+        );
+
+      case SearchState.error:
+        return Center(
+          child: Padding(
+            padding: const EdgeInsets.all(32),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const Text(
+                  'No s\'ha pogut connectar. Comprova la connexió.',
+                  textAlign: TextAlign.center,
+                ),
+                AppStyles.smallSeparator,
+                ElevatedButton(
+                  onPressed: loadPlaces,
+                  child: const Text('Tornar-ho a provar'),
+                ),
+              ],
+            ),
+          ),
+        );
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Codis Postals')),
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: TextField(
+              controller: searchController,
+              textInputAction: TextInputAction.search,
+              onSubmitted: (_) => loadPlaces(),
+              decoration: const InputDecoration(
+                hintText: 'Codi postal o població',
+                prefixIcon: Icon(Icons.search),
+              ),
+            ),
+          ),
+          Expanded(child: _buildBody()),
+        ],
+      ),
+    );
+  }
+}

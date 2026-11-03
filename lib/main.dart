@@ -1,16 +1,36 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:postcodes/screens/search_screen.dart';
+import 'package:postcodes/styles/app_styles.dart';
 
 void main() {
-  runApp(const MainApp());
+  if (kReleaseMode) {
+    debugPrint = (message, {wrapWidth}) {};
+  } else {
+    debugPrint = (message, {wrapWidth}) {
+      final lines = '$message'.split('\n').map((line) => '[PostCodes] $line');
+      debugPrintThrottled(lines.join('\n'), wrapWidth: wrapWidth);
+    };
+  }
+  runApp(const PostCodeApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class PostCodeApp extends StatelessWidget {
+  const PostCodeApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: Scaffold(body: Center(child: Text('Hello World!'))),
+    return MaterialApp(
+      theme: ThemeData(
+        fontFamily: GoogleFonts.googleSans().fontFamily,
+        scaffoldBackgroundColor: AppStyles.primary,
+        appBarTheme: AppBarTheme(
+          backgroundColor: AppStyles.primary,
+          foregroundColor: AppStyles.onPrimary,
+        ),
+      ),
+      home: const SearchScreen(),
     );
   }
 }
